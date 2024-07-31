@@ -6,6 +6,7 @@
 
 cv::Mat dataMatrixSolver::solveDataMatrix(cv::Mat image)
 {
+    cv::cvtColor(image, image, cv::COLOR_BGR2GRAY);
     cv::Mat white_image = cv::Mat::ones(image.size(), image.type()) * 255;
 
     std::vector<cv::Point2f> corners;

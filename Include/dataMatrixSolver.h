@@ -9,7 +9,7 @@
 
 namespace dataMatrixSolver
 {
-#define DILATE_AMOUNT 14
+#define DILATE_AMOUNT 10
     cv::Mat solveDataMatrix(cv::Mat image);
     void searchFrom(std::pair<int,int>start_point, cv::Mat& graph,
         std::vector<cv::Point2i> (&links)[1000], std::map<std::pair<int,int>,int>& visited, int &this_link_index);

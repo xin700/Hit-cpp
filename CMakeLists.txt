@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.28)
 project(Hit-cpp)
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Ofast")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Ofast -march=native")
 
 #add_definitions(-DDEBUG)
 #add_definitions(-DSHOW)
