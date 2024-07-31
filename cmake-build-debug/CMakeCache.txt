@@ -231,6 +231,9 @@ Hit-cpp_SOURCE_DIR:STATIC=/Users/xin/CLionProjects/Hit-cpp
 //The directory containing a CMake configuration file for OpenCV.
 OpenCV_DIR:PATH=/opt/homebrew/lib/cmake/opencv4
 
+//The directory containing a CMake configuration file for ZXing.
+ZXing_DIR:PATH=/usr/local/lib/cmake/ZXing
+
 
 ########################
 # INTERNAL cache entries

@@ -9,8 +9,8 @@
 cv::Mat imageHandler::enhanceImage(cv::Mat image)
 {
     cv::Mat enhancedImage = image;
-    // cv::equalizeHist(enhancedImage, enhancedImage);
-    cv::adaptiveThreshold(enhancedImage, enhancedImage, 255, cv::ADAPTIVE_THRESH_MEAN_C, cv::THRESH_BINARY, 15, 10);
+    cv::equalizeHist(enhancedImage, enhancedImage);
+    // cv::adaptiveThreshold(enhancedImage, enhancedImage, 255, cv::ADAPTIVE_THRESH_MEAN_C, cv::THRESH_BINARY, 15, 10);
     return enhancedImage;
 }
 
