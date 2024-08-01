@@ -12,14 +12,13 @@ signed main()
     auto start = std::chrono::high_resolution_clock::now();
 #endif
 
-    auto image_path = "/Users/xin/Desktop/HIT/金刚线/2.bmp";
-    auto image = cv::imread(image_path);
-    if (image.empty())
-    {
-        std::cerr << "Error: Image is empty!" << std::endl;
-        return -1;
-    }
-    minCircleSolver::solveMinCircle(image);
+
+    auto image = cv::imread("/Users/xin/Desktop/HIT/测试图像20240719/006057.bmp");
+    auto points = dataMatrixSolver::solveDataMatrix(image);
+    cv::circle(image,(points[0] + points[2]) / 2, minCircleSolver::real_distance(points[0],points[2]) / 2, cv::Scalar(0,255,0), 2);
+    // cv::imshow("image",image);
+    // cv::waitKey(0);
+
 
 
 #ifdef SHOW_TIME

@@ -218,9 +218,9 @@ void minCircleSolver::solveMinCircle(cv::Mat image)
     std::cout << "minCircle: " << std::get<0>(minCircle) << " " << std::get<1>(minCircle) << " " << std::get<2>(minCircle) << std::endl;
 
 #ifdef SHOW
-    cv::imshow("image",image_clone);
-    cv::waitKey(0);
-    cv::destroyAllWindows();
+    // cv::imshow("image",image_clone);
+    // cv::waitKey(0);
+    // cv::destroyAllWindows();
 #endif
 
 #endif
