@@ -26,5 +26,5 @@ std::vector<std::string> fileHandler::getFilesInDirectory(const std::string& dir
     } catch (const fs::filesystem_error& e) {
         std::cerr << "Filesystem error: " << e.what() << std::endl;
     }
-
+    return {};
 }
