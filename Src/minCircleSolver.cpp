@@ -280,7 +280,6 @@ double minCircleSolver::angle(cv::Point2i x, cv::Point2i y, cv::Point2i z)
     } else if (diff > 180.0) {
         diff -= 360.0;
     }
-    // std::cout << "diff: " << diff << std::endl;
     return fabs(diff);
 }
 
@@ -291,7 +290,6 @@ std::tuple<int,int,double> minCircleSolver::killCircle(const std::vector<cv::Poi
     for(int i=0;i<path.size();++i)
     {
         degrees[path[i]].push_back(i);
-        // std::cout << "i = " << i << " path[i] = " << path[i] << std::endl;
     }
     cv::Mat white_image = cv::Mat::ones(cv::Size(5120,5120),CV_8UC1)*255;
 
@@ -299,23 +297,10 @@ std::tuple<int,int,double> minCircleSolver::killCircle(const std::vector<cv::Poi
     {
         if(degrees[i].size() > 1)
         {
-            // std::cout << "i = " << i << " degree: " << degrees[i].size() << std::endl;
-            // cv::circle(white_image,Points[i],8,cv::Scalar(0),cv::FILLED);
-            // cv::imshow("white_image",white_image);
-            // cv::waitKey(0);
 
             for(int j=0;j<degrees[i].size() - 1;++j)
             {
                 auto start_index = degrees[i][j];
-
-                // for(int k=start_index; k < degrees[i][j+1];++k)
-                // {
-                    // cv::circle(white_image,Points[path[k]],8,cv::Scalar(0),cv::FILLED);
-                // }
-                // cv::imshow("white_image",white_image);
-                // white_image = cv::Mat::ones(cv::Size(5120,5120),CV_8UC1)*255;
-
-                // cv::waitKey(0);
 
                 for(int k = start_index;k < degrees[i][j+1];++ k)
                 {
@@ -331,18 +316,10 @@ std::tuple<int,int,double> minCircleSolver::killCircle(const std::vector<cv::Poi
                             farest_index = t;
                         }
                     }
-                    // cv::circle(white_image,Points[path[k]],8,cv::Scalar(0),cv::FILLED);
-                    // cv::circle(white_image,Points[path[farest_index]],8,cv::Scalar(0),cv::FILLED);
-                    // cv::line(white_image,Points[path[k]],Points[path[farest_index]],cv::Scalar(0),2);
-                    // cv::imshow("white_image",white_image);
-                    // cv::waitKey(0);
-                    // std::cout << "farset: " << farest << std::endl;
 
                     if(farest < std::get<2>(minCircle) and farest > 100)
                     {
                         minCircle = std::make_tuple(path[k],path[farest_index],farest);
-                        // std::cout << "k: " << Points[k] << " farest_index: " << Points[farest_index] << " farest: " << farest << std::endl;
-                        // std::cout << "circle_size: " << degrees[i][j+1] - degrees[i][j] << std::endl;
                     }
 
                 }
