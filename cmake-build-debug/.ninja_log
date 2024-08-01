@@ -1,7 +1,0 @@
-# ninja log v6
-6	405	1722310811691797528	CMakeFiles/Hit-cpp.dir/Src/fileHandler.cpp.o	be1343124f00e58c
-2	93	1722311532611385073	build.ninja	fbf066801499c774
-6	713	1722310811691629904	CMakeFiles/Hit-cpp.dir/Src/imageHandler.cpp.o	7c2311dd9ca16437
-6	760	1722310811691294071	CMakeFiles/Hit-cpp.dir/main.cpp.o	f94b53e6a821cd32
-866	896	1722310812551401519	Hit-cpp	69cf474d45ca49d8
-7	866	1722310811691959653	CMakeFiles/Hit-cpp.dir/Src/minCircleSolver.cpp.o	ac77742595e88acf
