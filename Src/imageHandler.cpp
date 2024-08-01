@@ -8,9 +8,11 @@
 
 cv::Mat imageHandler::enhanceImage(cv::Mat image)
 {
-    cv::Mat enhancedImage = image;
+    cv::Mat enhancedImage = image.clone();
+    cv::cvtColor(enhancedImage, enhancedImage, cv::COLOR_BGR2GRAY);
     cv::equalizeHist(enhancedImage, enhancedImage);
     // cv::adaptiveThreshold(enhancedImage, enhancedImage, 255, cv::ADAPTIVE_THRESH_MEAN_C, cv::THRESH_BINARY, 15, 10);
+    cv::cvtColor(enhancedImage, enhancedImage, cv::COLOR_GRAY2BGR);
     return enhancedImage;
 }
 

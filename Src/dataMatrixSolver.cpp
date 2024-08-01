@@ -3,8 +3,31 @@
 //
 
 #include <dataMatrixSolver.h>
+#include <minCircleSolver.h>
+#include <imageHandler.h>
 
-cv::Mat dataMatrixSolver::solveDataMatrix(cv::Mat image)
+
+std::vector<cv::Point2i> dataMatrixSolver::solveDataMatrix(cv::Mat image)
+{
+    double max_area = -1;
+    std::vector<cv::Point2i> max_points;
+    auto points = dataMatrixSolver::getDataMaxtrixPoints(image);
+    max_area = minCircleSolver::real_distance(points[0], points[1]) * minCircleSolver::real_distance(points[1], points[2]);
+    max_points = points;
+
+    image = imageHandler::enhanceImage(image);
+
+    points = dataMatrixSolver::getDataMaxtrixPoints(image);
+    if(minCircleSolver::real_distance(points[0], points[1]) * minCircleSolver::real_distance(points[1], points[2]) > max_area)
+    {
+        max_area = minCircleSolver::real_distance(points[0], points[1]) * minCircleSolver::real_distance(points[1], points[2]);
+        max_points = points;
+    }
+    return max_points;
+}
+
+
+std::vector<cv::Point2i> dataMatrixSolver::getDataMaxtrixPoints(cv::Mat image)
 {
     cv::cvtColor(image, image, cv::COLOR_BGR2GRAY);
     cv::Mat white_image = cv::Mat::ones(image.size(), image.type()) * 255;
@@ -69,13 +92,13 @@ cv::Mat dataMatrixSolver::solveDataMatrix(cv::Mat image)
         std::swap(point.x,point.y);
         // cv::circle(white_image, point, 1, cv::Scalar(0), 1, 8, 0);
     }
-    auto [p1, p2, p3, p4] = dataMatrixSolver::getCouners(links[0]);
-    cv::circle(image, p1, 5, cv::Scalar(0), 25, 8, 0);
-    cv::circle(image, p2, 5, cv::Scalar(0), 25, 8, 0);
-    cv::circle(image, p3, 5, cv::Scalar(0), 25, 8, 0);
-    cv::circle(image, p4, 5, cv::Scalar(0), 25, 8, 0);
-
-    return image;
+    auto answerData =  dataMatrixSolver::getCouners(links[0]);
+    std::vector<cv::Point2i> points;
+    points.push_back(std::get<0>(answerData));
+    points.push_back(std::get<1>(answerData));
+    points.push_back(std::get<2>(answerData));
+    points.push_back(std::get<3>(answerData));
+    return points;
 }
 
 void dataMatrixSolver::searchFrom(std::pair<int, int> start_point, cv::Mat& graph,
@@ -146,6 +169,74 @@ std::tuple<cv::Point2i,cv::Point2i,cv::Point2i,cv::Point2i>
 
     }
     answerData = {min_X_point, min_Y_point, max_X_point, max_Y_point};
+
+    return killIt(answerData);
+}
+
+std::tuple<cv::Point2i, cv::Point2i, cv::Point2i, cv::Point2i>
+        dataMatrixSolver::killIt(const std::tuple<cv::Point2i, cv::Point2i, cv::Point2i, cv::Point2i>& answerData)
+{
+    cv::Point2i p[] = {std::get<0>(answerData), std::get<1>(answerData), std::get<2>(answerData), std::get<3>(answerData)};
+    for(int i=0;i<=3;++i)
+    {
+        for(int j=0;j<=3;++j)
+        {
+            for(int k=0;k<=3;++k)
+            {
+                if(i == j or j == k or k == i) continue;
+                auto angle = minCircleSolver::angle(p[i], p[j], p[k]);
+                auto distance1 = minCircleSolver::real_distance(p[i], p[j]);
+                auto distance2 = minCircleSolver::real_distance(p[j], p[k]);
+
+                if(fabs(angle - 90.0) < 10
+                    and fabs(distance1 - distance2) < std::max(distance1,distance2) * 0.1)
+                {
+                    return {p[i], p[j], p[k], calculateFourthPoint(p[i], p[j], p[k])};
+                }
+            }
+        }
+    }
+    double max_distance = -1;
+    std::pair<cv::Point2i,cv::Point2i> max_pair;
+
+    for(int i=0;i<=3;++i)
+        for(int j=i+1;j<=3;++j)
+            if(minCircleSolver::real_distance(p[i],p[j]) > max_distance)
+            {
+                max_distance = minCircleSolver::real_distance(p[i],p[j]);
+                max_pair = {p[i],p[j]};
+            }
+    return getSqurePoints(max_pair);
+}
+
+cv::Point2i dataMatrixSolver::calculateFourthPoint(const cv::Point2i& p1, const cv::Point2i& p2, const cv::Point2i& p3)
+{
+    cv::Point2i p4;
+    p4.x = p3.x + (p1.x - p2.x);
+    p4.y = p3.y + (p1.y - p2.y);
+    return p4;
+}
+
+std::tuple<cv::Point2i, cv::Point2i, cv::Point2i, cv::Point2i>
+        dataMatrixSolver::getSqurePoints(std::pair<cv::Point2i, cv::Point2i> max_pair)
+{
+    // Extract the two diagonal points
+    cv::Point2i pt1 = max_pair.first;
+    cv::Point2i pt2 = max_pair.second;
+
+    // Calculate the midpoint
+    cv::Point2f midpoint((pt1.x + pt2.x) / 2.0, (pt1.y + pt2.y) / 2.0);
+
+    // Calculate half the length of the diagonal vector
+    float u = (pt2.x - pt1.x) / 2.0;
+    float v = (pt2.y - pt1.y) / 2.0;
+
+    // Calculate the other two points
+    cv::Point2i pt3(midpoint.x - v, midpoint.y + u);
+    cv::Point2i pt4(midpoint.x + v, midpoint.y - u);
+
+    // Return the points as a tuple
+    std::tuple<cv::Point2i, cv::Point2i, cv::Point2i, cv::Point2i> answerData = std::make_tuple(pt1, pt3, pt2, pt4);
 
     return answerData;
 }
