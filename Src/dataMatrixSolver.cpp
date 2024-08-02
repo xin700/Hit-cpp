@@ -6,24 +6,38 @@
 #include <minCircleSolver.h>
 #include <imageHandler.h>
 
+std::vector<cv::Point2i> dataMatrixSolver::comparePoints(std::vector<std::vector<cv::Point2i>> pointsData)
+{
+    std::sort(pointsData.begin(), pointsData.end(), [](const auto& a, const auto& b) -> bool
+    {
+        auto area1 = minCircleSolver::real_distance(a[0], a[1]) * minCircleSolver::real_distance(a[1], a[2]);
+        auto area2 = minCircleSolver::real_distance(b[0], b[1]) * minCircleSolver::real_distance(b[1], b[2]);
+        return area1 < area2;
+    });
+
+    for(const auto &points : pointsData)
+    {
+        auto radius = minCircleSolver::real_distance(points[0], points[2]) / 2;
+        if(radius < MIN_CIRCLE_RADIUS or radius > MAX_CIRCLE_RADIUS)
+            continue;
+        return points;
+    }
+    return pointsData[1];
+}
+
 
 std::vector<cv::Point2i> dataMatrixSolver::solveDataMatrix(cv::Mat image)
 {
-    double max_area = -1;
-    std::vector<cv::Point2i> max_points;
+    std::vector<std::vector<cv::Point2i>> answerData;
     auto points = dataMatrixSolver::getDataMaxtrixPoints(image);
-    max_area = minCircleSolver::real_distance(points[0], points[1]) * minCircleSolver::real_distance(points[1], points[2]);
-    max_points = points;
+    answerData.push_back(points);
 
-    image = imageHandler::enhanceImage(image);
+    auto enhancedImage = imageHandler::enhanceImage(image);
+    points = dataMatrixSolver::getDataMaxtrixPoints(enhancedImage);
+    answerData.push_back(points);
 
-    points = dataMatrixSolver::getDataMaxtrixPoints(image);
-    if(minCircleSolver::real_distance(points[0], points[1]) * minCircleSolver::real_distance(points[1], points[2]) > max_area)
-    {
-        max_area = minCircleSolver::real_distance(points[0], points[1]) * minCircleSolver::real_distance(points[1], points[2]);
-        max_points = points;
-    }
-    return max_points;
+
+    return comparePoints(answerData);
 }
 
 
@@ -43,7 +57,7 @@ std::vector<cv::Point2i> dataMatrixSolver::getDataMaxtrixPoints(cv::Mat image)
     cv::goodFeaturesToTrack(image, corners, maxCorners, qualityLevel, minDistance, cv::Mat(), blockSize, useHarrisDetector, k);
 
     for (size_t i = 0; i < corners.size(); i++) {
-        cv::circle(white_image, corners[i], 2, cv::Scalar(0), 23, 8, 0);
+        cv::circle(white_image, corners[i], 2, cv::Scalar(0), THICKNESS, 8, 0);
     }
 #ifdef SHOW
     cv::imshow("image",image);
@@ -90,7 +104,6 @@ std::vector<cv::Point2i> dataMatrixSolver::getDataMaxtrixPoints(cv::Mat image)
     for(auto &point : links[0])
     {
         std::swap(point.x,point.y);
-        // cv::circle(white_image, point, 1, cv::Scalar(0), 1, 8, 0);
     }
     auto answerData =  dataMatrixSolver::getCouners(links[0]);
     std::vector<cv::Point2i> points;

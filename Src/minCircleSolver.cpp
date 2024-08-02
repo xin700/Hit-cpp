@@ -100,9 +100,19 @@ void minCircleSolver::solveMinCircle(cv::Mat image)
     // cv::imshow("123",white2);
     // cv::waitKey(0);
 
-#endif
+
 
     std::cout << "Points size: " << Points.size() << std::endl;
+    white_image = cv::Mat::ones(image.size(),CV_8UC1)*255;
+    for(auto point : Points)
+    {
+        cv::circle(white_image,point,8,cv::Scalar(0),cv::FILLED);
+    }
+    cv::imshow("white_image",white_image);
+    cv::waitKey(0);
+    white_image = cv::Mat::ones(image.size(),CV_8UC1)*255;
+#endif
+
 #ifndef DEBUG
     cv::Point2i last_point = Points[0],now_point;
     for(int i=1;i<Points.size();++i)
