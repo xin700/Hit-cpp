@@ -155,7 +155,7 @@ make -j
 1. 对于图像进行`Shi-Tomasi Corners`检测，找到角点。
 2. 之后我们对于角点部分进行膨胀，在空白图的基础上的到一张膨胀后的密集角点图像。
 3. 之后我们对于图像进行若干次的腐蚀，使得松散的角点区域消失而只保留密集角点的二维码区域角点。
-4. 使用`Torjan`算法及`BFS`搜索。将整张像素图作为一张图，利用图论中的`Torjan`算法配合`BFS`广度优先搜索算法，对于联通块进行查找，找到最大的联通块，即为二维码区域。
+4. 使用`Tarjan`算法及`BFS`搜索。将整张像素图作为一张图，利用图论中的`Tarjan`算法配合`BFS`广度优先搜索算法，对于联通块进行查找，找到最大的联通块，即为二维码区域。
 5. 取得最大联通块区域，找到联通块中的最远点，这就是此算法下的二维码的定位直径。
 
 **使用方法**
@@ -181,6 +181,20 @@ make -j
 <tr>
     <td><img src="./Img/data-matrix5.png"  width="300"/></td>
     <td><img src="./Img/data-matrix6.png"  width="300"/></td>
+  </tr>
+</table>
+<table>
+  <tr>
+    <td><img src="./Img/data-matrix8.png"  width="300"/></td>
+    <td><img src="./Img/data-matrix9.png"  width="300"/></td>
+  </tr>
+<tr>
+    <td><img src="./Img/data-matrix10.png"  width="300"/></td>
+    <td><img src="./Img/data-matrix11.png"  width="300"/></td>
+  </tr>
+<tr>
+    <td><img src="./Img/data-matrix12.png"  width="300"/></td>
+    <td><img src="./Img/data-matrix13.png"  width="300"/></td>
   </tr>
 </table>
 

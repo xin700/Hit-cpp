@@ -23,3 +23,29 @@ void imageHandler::showImage(const cv::Mat& image)
     cv::destroyAllWindows();
 }
 
+cv::Mat imageHandler::brightenImage(const cv::Mat &image, float alpha, float beta)
+{
+    int height = image.rows;
+    int width = image.cols;
+    cv::Mat dst = cv::Mat::zeros(image.size(), image.type());
+
+    for (int row = 0; row < height; row++) {
+        for (int col = 0; col < width; col++) {
+            if (image.channels() == 3) {
+                int b = image.at<cv::Vec3b>(row, col)[0];
+                int g = image.at<cv::Vec3b>(row, col)[1];
+                int r = image.at<cv::Vec3b>(row, col)[2];
+
+                dst.at<cv::Vec3b>(row, col)[0] = cv::saturate_cast<uchar>(b * alpha + beta);
+                dst.at<cv::Vec3b>(row, col)[1] = cv::saturate_cast<uchar>(g * alpha + beta);
+                dst.at<cv::Vec3b>(row, col)[2] = cv::saturate_cast<uchar>(r * alpha + beta);
+
+            } else if (image.channels() == 1) {
+                float v = image.at<uchar>(row, col);
+                dst.at<uchar>(row, col) = cv::saturate_cast<uchar>(v * alpha + beta);
+            }
+        }
+    }
+    return dst;
+}
+

@@ -143,12 +143,17 @@ cv::Mat lineSolver::rotate2horizon(cv::Mat image)
     std::vector<cv::Point> top_points;
     std::vector<cv::Point> bottom_points;
 
+    cv::Mat visiable_image = image_original.clone();
+#ifdef SHOW
+    cv::cvtColor(visiable_image, visiable_image, cv::COLOR_GRAY2BGR);
+#endif
     // 计算顶点和底点
     for (int x : x_list) {
         int y_top = 0, y_bottom = 0;
         for (int y = 0; y < height; ++y) {
             if (image.at<uchar>(y, x) != 255) {
                 y_top = y;
+                cv::circle(visiable_image, cv::Point(x, y), 3, cv::Scalar(0, 255, 0), 2);
                 break;
             }
         }
@@ -156,6 +161,7 @@ cv::Mat lineSolver::rotate2horizon(cv::Mat image)
         for (int y = height - 1; y >= 0; --y) {
             if (image.at<uchar>(y, x) != 255) {
                 y_bottom = y;
+                cv::circle(visiable_image, cv::Point(x, y), 3, cv::Scalar(0, 255, 0), 2);
                 break;
             }
         }
@@ -179,6 +185,13 @@ cv::Mat lineSolver::rotate2horizon(cv::Mat image)
     Eigen::VectorXd result = A.colPivHouseholderQr().solve(y);
     double m = result(0);
     double c = result(1);
+#ifdef SHOW
+    auto p1 = cv::Point2i(1, (int) (m * 1 + c));
+    auto p2 = cv::Point2i(width - 1, (int) (m * (width - 1) + c));
+    cv::line(visiable_image, p1, p2, cv::Scalar(255, 0, 0), 5);
+    cv::imshow("visiable_image", visiable_image);
+    cv::waitKey(0);
+#endif
 
     return rotate4angle(image_original, -m);
 }
