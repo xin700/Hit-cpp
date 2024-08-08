@@ -26,6 +26,8 @@ add_executable(Hit-cpp main.cpp
         Include/lineSolver.h
         Src/lineSolver.cpp
         Include/dataMatrixSolver.h
-        Src/dataMatrixSolver.cpp)
+        Src/dataMatrixSolver.cpp
+        Include/dataMatrixSolver2.h
+        Src/dataMatrixSolver2.cpp)
 
 target_link_libraries(Hit-cpp ${OpenCV_LIBS} Eigen3::Eigen)
